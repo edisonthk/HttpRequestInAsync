@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "URLConnectionDelegateExample.h"
 
 @interface ViewController ()
 
@@ -28,22 +29,13 @@
 
 -(IBAction)sayHello
 {
-    UIAlertView* dialog = [[UIAlertView alloc]initWithTitle:@"Title"
-                                                    message:@"message"
-                                                   delegate:self
-                                          cancelButtonTitle:@"Cancel"
-                                          otherButtonTitles:@"OK", nil];
-    [dialog show];
     
-}
-
--(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
+    URLConnectionDelegateExample* d = [[URLConnectionDelegateExample alloc]init];
     
-    self.responseData = [NSMutableData data];
+    
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://eicforum.mydns.jp/test2.php"]];
-    NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:request delegate:self];
+    NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:request delegate:d];
     if(connection){
         NSLog(@"yes");
         [connection start];
@@ -51,36 +43,8 @@
         NSLog(@"no");
     }
     
-    NSLog(@"%@  %@  %d",alertView.title, alertView.message, buttonIndex);
-    
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    NSLog(@"didReceiveResponse");
-    [self.responseData setLength:0];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.responseData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    NSLog(@"didFailWithError");
-    NSLog([NSString stringWithFormat:@"Connection failed: %@", [error description]]);
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    NSLog(@"connectionDidFinishLoading");
-    NSLog(@"Succeeded! Received %d bytes of data",[self.responseData length]);
-    
-    
-    
-    NSLog([[NSString alloc]initWithData:self.responseData encoding:NSUTF8StringEncoding]);
-    
-    // convert to JSON
-}
 
 
 
